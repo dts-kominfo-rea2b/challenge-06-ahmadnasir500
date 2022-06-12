@@ -21,19 +21,23 @@ let modifyFile3 = (val) => {
 // gunakan variabel file1, file2, dan file3
 const bacaData = (fnCallback) => {
   const result = [];
-  fs.readFile(file1, { encoding: "utf-8" }, (err, data) => {
+  fs.readFile(file1, "utf8", (err, data) => {
     if (err) fnCallback(err, null);
-    result.push(JSON.parse(data).message.split(" ")[1]);
-  });
-  fs.readFile(file2, { encoding: "utf-8" }, (err, data) => {
-    if (err) fnCallback(err, null);
-    result.push(JSON.parse(data)[0].message.split(' ')[1]);
-  });
-  fs.readFile(file3, { encoding: "utf-8" }, (err, data) => {
-    if (err) fnCallback(err, null);
-    result.push(JSON.parse(data)[0].data.message.split(" ")[1]);
-
-    fnCallback(null, result);
+    const { message } = JSON.parse(data);
+    result.push(message.split(" ")[1]);
+    fs.readFile(file2, "utf8", (err, data) => {
+      if (err) fnCallback(err, null);
+      const response = JSON.parse(data);
+      console.log(response[0].message.split(" ")[1]);
+      result.push(response[0].message.split(" ")[1]);
+      fs.readFile(file3, "utf8", (err, data) => {
+        if (err) fnCallback(err, null);
+        const response = JSON.parse(data);
+        console.log(response[0].data.message.split(" ")[1]);
+        result.push(response[0].data.message.split(" ")[1]);
+        fnCallback(null, result);
+      });
+    });
   });
 };
 
